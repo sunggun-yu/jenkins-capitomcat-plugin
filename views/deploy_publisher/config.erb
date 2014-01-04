@@ -1,0 +1,68 @@
+<%
+ f = taglib("/lib/form")
+  f.block do
+    f.section(:title => 'Host Setting') do
+      f.entry(:title => 'Host to deploy',
+      :field => 'remote_hosts',
+      :description => 'The application server and user that you want to deploy. ex) deploy@dev01 deploy@dev02') do
+        f.textbox
+      end
+      f.entry(:title => 'Parallel / Sequence',
+      :field => 'isParallel',
+      :description => 'true/false') do
+        f.textbox
+      end
+    end
+    f.section(:title => 'Account Setting') do
+      f.entry(:title => 'Tomcat user name',
+      :field => 'tomcat_user',
+      :description => 'The owner of Tomcat home directory.') do
+        f.textbox
+      end
+      f.entry(:title => 'Tomcat group name',
+      :field => 'tomcat_user_group',
+      :description => 'The group of Tomcat home directory.') do
+        f.textbox
+      end
+    end
+    f.section(:title => 'Deploy Setting') do
+      f.entry(:title => 'War file path',
+      :field => 'local_war_file',
+      :description => 'The WAR file which will upload to remote tomcat server.') do
+        f.textbox
+      end
+      f.entry(:title => 'Tomcat port number',
+      :field => 'tomcat_port',
+      :description => 'Port number of Tomcat server. this value is needed to check whether Tomcat process is running.') do
+        f.textbox
+      end
+      f.entry(:title => 'Path to save WAR file',
+      :field => 'remote_docBase',
+      :description => ' The pathname to the web application archive file (if this web application is being executed directly from the WAR file') do
+        f.textbox
+      end
+      f.entry(:title => 'Tomcat command path',
+      :field => 'remote_tomcat_cmd',
+      :description => 'Tomcat command. for example, /etc/init.d/tomcat or /your/tomcat/home/bin/catalina.sh can be used. please make sure not to include start or stop parameter.') do
+        f.textbox
+      end
+      f.entry(:title => 'Work directory path',
+      :field => 'remote_tomcat_work_dir',
+      :description => 'Tomcat work directory for application. this directory will be used at capitomcat:cleanWorkDir task') do
+        f.textbox
+      end
+
+      f.entry(:title => 'Root context name',
+      :field => 'context_name',
+      :description => 'Root context name of application.') do
+        f.textbox
+      end
+      f.entry(:title => 'Context file path',
+      :field => 'remote_context_file',
+      :description => 'Context file path of application for Tomcat on your remote servers. basically, context file is located in /your/tomcat/home/conf/Catalina/localhost/appname.xml') do
+        f.textbox
+      end
+
+    end
+  end
+%>
