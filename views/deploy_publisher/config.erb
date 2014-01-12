@@ -4,24 +4,19 @@
    f.section(:title => 'Remote Tomcat Server Config') do
      f.entry(:title => 'Host to deploy',
              :field => 'remote_hosts',
-             :description => 'The application server and user that you want to deploy. ex) deploy@dev01 deploy@dev02') do
+             :description => 'The application server and user that you want to deploy. ex) deploy@dev01,deploy@dev02') do
        f.textbox
      end
-     f.entry(:title => 'Tomcat Home',
-             :field => 'remote_tomcat_home',
-             :description => 'Tomcat home directory.') do
-       f.textbox
-     end
-     f.entry(:title => 'Tomcat Host Name',
-             :field => 'remote_tomcat_hostname',
-             :description => 'Tomcat home directory.') do
-       f.textbox
-     end
-     f.entry(:title => 'Tomcat command path',
-             :field => 'remote_tomcat_cmd',
+     f.entry(:title => 'Tomcat Command',
+             :field => 'tomcat_cmd',
              :value => 'localhost',
              :description => 'Tomcat command. for example, /etc/init.d/tomcat or /your/tomcat/home/bin/catalina.sh can be used. please make sure not to include start or stop parameter.') do
        f.textbox
+     end
+     f.entry(:title => 'Use tomcat user for tomcat command',
+             :field => 'use_tomcat_user_cmd',
+             :description => 'Yes/No') do
+       f.booleanRadio
      end
      f.entry(:title => 'Tomcat user name',
              :field => 'tomcat_user',
@@ -41,33 +36,46 @@
              :description => 'Port number of Tomcat server. this value is needed to check whether Tomcat process is running.') do
        f.textbox
      end
+     f.entry(:title => 'Tomcat work directory path',
+             :field => 'tomcat_work_dir',
+             :description => 'Work directory of tomcat application. ex) /var/lib/tomcat7/work/Catalina/localhost/test-web') do
+       f.textbox
+     end
    end
 
    f.section(:title => 'Deploy Setting') do
 
      f.entry(:title => 'War file path to deploy',
              :field => 'local_war_file',
-             :description => 'The WAR file that will be uploaded to remote tomcat server.') do
+             :description => 'The WAR file that will be uploaded to remote tomcat server. ex) /tmp/test-web.war') do
        f.textbox
      end
 
      f.entry(:title => 'Parallel Task',
-             :field => 'is_parallel',
+             :field => 'use_parallel',
              :description => 'Yes/No') do
        f.booleanRadio
      end
 
      f.entry(:title => 'Remote WAR file path',
-             :field => 'remote_doc_base',
-             :description => ' The path name to the web application archive file') do
+             :field => 'tomcat_war_file',
+             :description => 'The path name to the web application archive file. ex) /var/app/war/test-web-2014-01-11.war, /var/lib/tomcat7/webapps/test-web.war') do
        f.textbox
      end
 
      f.optionalBlock(:title => 'Use Updating Context file',
-                     :field => 'update_context',
+                     :field => 'use_context_update',
                      :inline => true) do
-       f.entry(:title => 'Root context name',
-               :field => 'context_name') do
+
+       f.entry(:title => 'Context path of application',
+               :field => 'tomcat_context_path',
+               :description => 'Context path name of application. ex) /test-web') do
+         f.textbox
+       end
+
+       f.entry(:title => 'Context file path to update',
+               :field => 'tomcat_context_file',
+               :description => 'Context file path of application. ex) /var/lib/tomcat7/conf/Catalina/localhost/test-web.xml') do
          f.textbox
        end
      end
