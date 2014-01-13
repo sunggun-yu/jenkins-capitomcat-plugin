@@ -1,3 +1,3 @@
-Jenkins Plugin for Capitomcat
+Capitomcat Jenkins Plugin
 ====
 

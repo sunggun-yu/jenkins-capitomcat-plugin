@@ -11,5 +11,5 @@ Jenkins::Plugin::Specification.new do |plugin|
   plugin.uses_repository :github => "sunggun-yu/jenkins-capitomcat-plugin"
 
   # This is a required dependency for every ruby plugin.
-  plugin.depends_on 'ruby-runtime', '0.12'
+  plugin.depends_on 'ruby-runtime', '0.11'
 end
