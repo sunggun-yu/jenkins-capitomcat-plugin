@@ -18,6 +18,7 @@ namespace :capitomcat_jenkins do
     listener.info '---------------------------------------------------------------------------'
 
     on roles(:app), in: get_parallelism, wait: 5 do |host|
+
       if fetch(:use_context_update) == true then
         listener.info "[#{host}] Uploading WAR file : #{fetch(:local_war_file)} => #{fetch(:tomcat_war_file)}"
         upload_war_file
@@ -50,7 +51,6 @@ namespace :capitomcat_jenkins do
         check_tomcat_started
         listener.info "[#{host}] >>>> Finished"
       end
-
     end
     listener.info '---------------------------------------------------------------------------'
   end
