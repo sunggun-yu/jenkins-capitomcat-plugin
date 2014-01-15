@@ -13,7 +13,7 @@ class JenkinsOutput
   def write(obj)
     case obj
       when SSHKit::LogMessage then
-        write_log_message(@native, obj)
+        write_log_message(obj)
       else
         logger.print(blind_ansi_color(obj.to_s))
     end
@@ -22,7 +22,7 @@ class JenkinsOutput
   alias :<< :write
 
 
-  def write_log_message(native, log)
+  def write_log_message(log)
     message = blind_ansi_color(log.to_s)
     case message.verbosity
       when Logger::DEBUG, Logger::INFO
