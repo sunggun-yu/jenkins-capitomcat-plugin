@@ -1,4 +1,4 @@
-require 'sshkit/formatters/abstract'
+require 'sshkit/formatters/pretty'
 require_relative 'jenkins_output'
 
 class JenkinsSSHKitFormatter < SSHKit::Formatter::Pretty
