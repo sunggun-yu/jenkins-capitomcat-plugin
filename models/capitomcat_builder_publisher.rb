@@ -1,11 +1,7 @@
 require 'fileutils'
 require_relative 'capitomcat_builder'
-require 'jenkins/model/listener'
-require 'jenkins/launcher'
-require 'jenkins/model/build'
-require 'jenkins/model/environment'
 
-class DeployPublisher < Jenkins::Tasks::Publisher
+class CapitomcatBuilderPublisher < Jenkins::Tasks::Publisher
 
   attr_accessor :remote_hosts,
                 :tomcat_user,
@@ -19,7 +15,10 @@ class DeployPublisher < Jenkins::Tasks::Publisher
                 :tomcat_work_dir,
                 :local_war_file,
                 :use_parallel,
-                :use_context_update
+                :use_context_update,
+                :use_ssh_key_file,
+                :ssh_key_file,
+                :log_verbose
 
   display_name 'Deploy via Capitomcat'
 
@@ -31,11 +30,11 @@ class DeployPublisher < Jenkins::Tasks::Publisher
     begin
       listener.info 'Starting Capitomcat Tomcat deploy'
       capi_builder  = CapitomcatBuilder.new self, build, listener
-      capi_builder.do_deploy
+      capi_builder.execute
       listener.info 'Capitomcat deploy has finished successfully'
     rescue => e
-      listener.error ['Capitomcat deploy has failed', e.message, e.backtrace] * "\n"
-      build.abort
+      listener.error [e.message, e.backtrace] * "\n"
+      raise 'Capitomcat deploy has failed'
     end
   end
 end

@@ -2,6 +2,8 @@ require 'rake'
 require 'capistrano/all'
 require 'capistrano/setup'
 require 'sshkit'
+require_relative 'jenkins_sshkit_formatter'
+require_relative 'jenkins_output'
 
 class CapitomcatBuilder
 
@@ -9,7 +11,19 @@ class CapitomcatBuilder
     @task = task
     @build = build
     @listener = listener
+    configure()
   end
+
+  def configure
+    config_global_ssh()
+    config_out_formatter() if @task.log_verbose.to_bool
+  end
+
+  def execute
+    do_deploy
+  end
+
+  private
 
   def do_deploy
 
@@ -28,9 +42,7 @@ class CapitomcatBuilder
     set :tomcat_user_group, @task.tomcat_user_group
     set :tomcat_port, @task.tomcat_port
     set :tomcat_cmd, @task.tomcat_cmd
-
-    (@task.use_tomcat_user_cmd.to_s == 'true') ? _use_tomcat_user_cmd = true : _use_tomcat_user_cmd = false
-    set :use_tomcat_user_cmd, _use_tomcat_user_cmd
+    set :use_tomcat_user_cmd, @task.use_tomcat_user_cmd.to_bool
 
     set :tomcat_war_file, @task.tomcat_war_file
     set :tomcat_context_path, @task.tomcat_context_path
@@ -40,13 +52,8 @@ class CapitomcatBuilder
     # Deploy setting section
     set :local_war_file, @task.local_war_file
     set :context_template_file, File.expand_path('../templates/context.xml.erb', __FILE__).to_s
-
-    (@task.use_context_update.to_s == 'true') ? _use_context_update = true : _use_context_update = false
-    set :use_context_update, _use_context_update
-
-    (@task.use_parallel.to_s == 'true') ? _use_parallel = true : _use_parallel = false
-    set :use_parallel, _use_parallel
-
+    set :use_context_update, @task.use_context_update.to_bool
+    set :use_parallel, @task.use_parallel.to_bool
     set :listener, @listener
 
     capitomcat_task_name = 'capitomcat_jenkins:deploy'
@@ -57,7 +64,7 @@ class CapitomcatBuilder
     is_task_exist = false
 
     # check capitomcat task existing
-    Rake.application.tasks.each do | t |
+    Rake.application.tasks.each do |t|
       if t.name == capitomcat_task_name
         t.reenable
         is_task_exist = true
@@ -74,5 +81,62 @@ class CapitomcatBuilder
       puts "[#{capitomcat_task_name}] added"
     end
     capistrano.invoke(capitomcat_task_name)
+  end
+
+  def config_global_ssh
+    SSHKit::Backend::Netssh.configure do |ssh|
+      ssh.connection_timeout = 30
+      ssh.pty = true
+      ssh.ssh_options= {}.tap do |sho|
+        sho[:keys] = [@task.ssh_key_file] if @task.use_ssh_key_file && @task.ssh_key_file.length > 0
+        sho[:auth_methods] = %w(publickey)
+      end
+    end
+  end
+
+  def config_out_formatter
+    SSHKit.config.output = JenkinsSSHKitFormatter.new(@native)
+  end
+end
+
+class String
+  def to_bool
+    return true if self == true || self =~ (/^(true|t|yes|y|1)$/i)
+    return false if self == false || self.empty? || self =~ (/^(false|f|no|n|0)$/i)
+    return false
+  end
+end
+
+class Fixnum
+  def to_bool
+    return true if self == 1
+    return false if self == 0
+    return false
+  end
+end
+
+class TrueClass
+  def to_i;
+    1;
+  end
+
+  def to_bool;
+    self;
+  end
+end
+
+class FalseClass
+  def to_i;
+    0;
+  end
+
+  def to_bool;
+    self;
+  end
+end
+
+class NilClass
+  def to_bool;
+    false;
   end
 end
