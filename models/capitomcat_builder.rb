@@ -95,7 +95,7 @@ class CapitomcatBuilder
   end
 
   def config_out_formatter
-    SSHKit.config.output = JenkinsSSHKitFormatter.new(@native)
+    SSHKit.config.output = JenkinsSSHKitFormatter.new(@listener.native)
   end
 end
 
