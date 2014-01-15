@@ -35,7 +35,7 @@ namespace :capitomcat_jenkins do
         listener.info "[#{host}] Starting Tomcat    : #{fetch(:tomcat_cmd)} start"
         start_tomcat
         check_tomcat_started
-        listener.info "[#{host}] >>>> Finished"
+        listener.info "[#{host}] >>>> Complete"
       else
         listener.info "[#{host}] Stopping Tomcat    : #{fetch(:tomcat_cmd)} stop"
         stop_tomcat
@@ -49,7 +49,7 @@ namespace :capitomcat_jenkins do
         listener.info "[#{host}] Starting Tomcat    : #{fetch(:tomcat_cmd)} start"
         start_tomcat
         check_tomcat_started
-        listener.info "[#{host}] >>>> Finished"
+        listener.info "[#{host}] >>>> Complete"
       end
     end
     listener.info '---------------------------------------------------------------------------'

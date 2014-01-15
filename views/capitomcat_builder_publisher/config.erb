@@ -81,4 +81,24 @@
        end
      end
    end
+
+   f.section(:title => 'Advanced Setting') do
+     f.advanced do
+       f.optionalBlock(:title => 'Configure SSH private key file path',
+                       :field => 'use_ssh_key_file',
+                       :description => 'Yes/No',
+                       :inline => true) do
+         f.entry(:title => 'SSH private key file path',
+                 :field => 'ssh_key_file',
+                 :description => 'ex) /home/user/.ssh/id_rsa') do
+           f.textbox
+         end
+       end
+       f.entry(:title => 'Show verbose log message',
+               :field => 'log_verbose',
+               :description => 'Yes/No') do
+         f.booleanRadio
+       end
+     end
+   end
 %>
