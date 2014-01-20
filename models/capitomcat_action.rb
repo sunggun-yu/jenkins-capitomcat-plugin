@@ -2,10 +2,12 @@ require 'rake'
 require 'capistrano/all'
 require 'capistrano/setup'
 require 'sshkit'
+require 'fileutils'
 require_relative 'jenkins_sshkit_formatter'
 require_relative 'jenkins_output'
+require_relative 'capitomcat_utils'
 
-class CapitomcatBuilder
+class CapitomcatAction
 
   def initialize(task, build, listener)
     @task = task
@@ -17,6 +19,11 @@ class CapitomcatBuilder
   def configure
     config_global_ssh()
     config_out_formatter() if @task.log_verbose.to_bool
+    utils = CapitomcatUtils.new(@task, @build.send(:native).getEnvironment(@listener))
+    @tomcat_war_file = utils.get_tomcat_war_file
+    @local_war_file = utils.get_local_war_file
+    @tomcat_context_file = utils.get_tomcat_context_file
+    @tomcat_work_dir = utils.get_tomcat_work_dir
   end
 
   def execute
@@ -44,13 +51,13 @@ class CapitomcatBuilder
     set :tomcat_cmd, @task.tomcat_cmd
     set :use_tomcat_user_cmd, @task.use_tomcat_user_cmd.to_bool
 
-    set :tomcat_war_file, @task.tomcat_war_file
+    set :tomcat_war_file, @tomcat_war_file
     set :tomcat_context_path, @task.tomcat_context_path
-    set :tomcat_context_file, @task.tomcat_context_file
-    set :tomcat_work_dir, @task.tomcat_work_dir
+    set :tomcat_context_file, @tomcat_context_file
+    set :tomcat_work_dir, @tomcat_work_dir
 
     # Deploy setting section
-    set :local_war_file, @task.local_war_file
+    set :local_war_file, @local_war_file
     set :context_template_file, File.expand_path('../templates/context.xml.erb', __FILE__).to_s
     set :use_context_update, @task.use_context_update.to_bool
     set :use_parallel, @task.use_parallel.to_bool
@@ -99,44 +106,3 @@ class CapitomcatBuilder
   end
 end
 
-class String
-  def to_bool
-    return true if self == true || self =~ (/^(true|t|yes|y|1)$/i)
-    return false if self == false || self.empty? || self =~ (/^(false|f|no|n|0)$/i)
-    return false
-  end
-end
-
-class Fixnum
-  def to_bool
-    return true if self == 1
-    return false if self == 0
-    return false
-  end
-end
-
-class TrueClass
-  def to_i;
-    1;
-  end
-
-  def to_bool;
-    self;
-  end
-end
-
-class FalseClass
-  def to_i;
-    0;
-  end
-
-  def to_bool;
-    self;
-  end
-end
-
-class NilClass
-  def to_bool;
-    false;
-  end
-end
