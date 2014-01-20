@@ -13,7 +13,7 @@ class CapitomcatUtils
     if @task.use_context_update.to_bool
       return return substitute_env_vars(@task.tomcat_doc_base)
     else
-      return File.join(@task.tomcat_home, @task.tomcat_vhost, @task.tomcat_app_base, get_tomcat_context_name() + '.war').to_s
+      return File.join(@task.tomcat_home, @task.tomcat_app_base, get_tomcat_context_name() + '.war').to_s
     end
   end
 
