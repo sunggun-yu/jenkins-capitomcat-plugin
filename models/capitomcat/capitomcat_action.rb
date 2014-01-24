@@ -86,10 +86,9 @@ module Capitomcat
       require 'capitomcat'
 
       is_task_exist = false
-
+      # Clearing Rake tasks
       Rake.application.clear
-
-      # check capitomcat task existing
+      # check capitomcat task existing : just in case
       Rake.application.tasks.each do |t|
         if t.name == capitomcat_task_name
           t.reenable
@@ -97,6 +96,7 @@ module Capitomcat
           puts "[#{capitomcat_task_name}] re-enabled"
         end
       end
+
       Capistrano::Application
       capistrano = Capistrano::Application.new
       # adding import for capitomcat recipe

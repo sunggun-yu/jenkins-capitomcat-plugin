@@ -38,11 +38,37 @@ module Capitomcat
 
     display_name 'Deploy WAR file to Tomcat via Capitomcat'
 
+    # Invoked with the form parameters when this extension point
+    # is created from a configuration screen.
     def initialize(attrs = {})
       attrs.each { |k, v| instance_variable_set "@#{k}", v }
     end
 
+    ##
+    # Runs before the build begins
+    #
+    # @param [Jenkins::Model::Build] build the build which will begin
+    # @param [Jenkins::Model::Listener] listener the listener for this build.
+    def prebuild(build, listener)
+
+    end
+
+    ##
+    # Runs the step over the given build and reports the progress to the listener.
+    #
+    # @param [Jenkins::Model::Build] build on which to run this step
+    # @param [Jenkins::Launcher] launcher the launcher that can run code on the node running this build
+    # @param [Jenkins::Model::Listener] listener the listener for this build.
     def perform(build, launcher, listener)
+      black_status = %w(ABORTED FAILURE NOT_BUILT UNSTABLE)
+      if black_status.include?build.native.getResult().to_s
+        listener.error('Capitomcat deployment has aborted by the previous build was not succeed.')
+      else
+        invoke(build, launcher, listener)
+      end
+    end
+
+    def invoke(build, launcher, listener)
       begin
         listener.info 'Starting Capitomcat Tomcat deploy'
         capi_builder = CapitomcatAction.new self, build, listener
@@ -53,10 +79,6 @@ module Capitomcat
         listener.error [e.message, e.backtrace] * "\n"
         raise 'Capitomcat deploy has failed'
       end
-    end
-
-    def self.get_use_context_update
-      return use_context_update
     end
   end
 end
