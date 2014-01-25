@@ -4,7 +4,7 @@
    f.section(:title => 'Host and Authentication config') do
      f.entry(:title => 'Hosts',
              :field => 'remote_hosts',
-             :description => 'The remote host name with user account for deploy. ex) dev01,dev02') do
+             :description => 'The remote host names ex) dev01,dev02') do
        f.textbox
      end
      f.entry(:title => 'User account',
@@ -41,12 +41,12 @@
    f.section(:title => 'Deploy Config') do
      f.entry(:title => 'WAR file',
              :field => 'local_war_file',
-             :description => 'The WAR file that will be deployed to remote tomcat server. also, you can use Jenkins env-vars. ex) $WORKSPACE/target/app.war') do
+             :description => 'The WAR file that to be deployed to remote tomcat server. also, you can use Jenkins env-vars. ex) $WORKSPACE/target/app.war') do
        f.textbox
      end
      f.entry(:title => 'Parallel Mode',
              :field => 'use_parallel',
-             :description => 'Parallel or Sequential of deployment task') do
+             :description => 'Parallel or Sequential for deployment task') do
        f.booleanRadio(:field => 'use_parallel',)
      end
 
