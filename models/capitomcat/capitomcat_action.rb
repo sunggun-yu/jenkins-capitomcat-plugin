@@ -19,6 +19,7 @@ module Capitomcat
     end
 
     def configure
+      Capistrano::Configuration.reset!
       config_global_ssh()
       config_out_formatter() if @task.log_verbose.to_bool
       @utils = CapitomcatUtils.new(@task, @build.send(:native).getEnvironment(@listener))
@@ -33,10 +34,11 @@ module Capitomcat
     private
 
     def set_variables
+
       set :stage, :dev
 
       set :format, :pretty
-      set :log_level, :info
+      set :log_level, :debug
       set :pty, true
       set :use_sudo, true
 
@@ -61,6 +63,28 @@ module Capitomcat
       set :use_context_update, @utils.is_use_context_update
       set :use_parallel, @task.use_parallel.to_bool
       set :listener, @listener
+
+      if @task.log_verbose.to_bool
+        @listener.debug('---------------------------------------------------------------------------')
+        @listener.debug('Capitomcat Configs')
+        @listener.debug('---------------------------------------------------------------------------')
+        @listener.debug("remote_hosts          => #{@task.remote_hosts.to_s}")
+        @listener.debug("user_account          => #{@task.user_account}")
+        @listener.debug("auth_method           => #{@task.auth_method}")
+        @listener.debug("local_war_file        => #{fetch(:local_war_file)}")
+        @listener.debug("tomcat_user           => #{fetch(:tomcat_user)}")
+        @listener.debug("tomcat_user_group     => #{fetch(:tomcat_user_group)}")
+        @listener.debug("tomcat_port           => #{fetch(:tomcat_port)}")
+        @listener.debug("tomcat_cmd            => #{fetch(:tomcat_cmd)}")
+        @listener.debug("use_tomcat_user_cmd   => #{fetch(:use_tomcat_user_cmd)}")
+        @listener.debug("use_context_update    => #{fetch(:use_context_update)}")
+        @listener.debug("tomcat_context_path   => #{fetch(:tomcat_context_path)}")
+        @listener.debug("tomcat_context_file   => #{fetch(:tomcat_context_file)}")
+        @listener.debug("tomcat_work_dir       => #{fetch(:tomcat_work_dir)}")
+        @listener.debug("context_template_file => #{fetch(:context_template_file)}")
+        @listener.debug("tomcat_war_file       => #{fetch(:tomcat_war_file)}")
+        @listener.debug("use_parallel          => #{fetch(:use_parallel)}")
+      end
     end
 
     def do_deploy
