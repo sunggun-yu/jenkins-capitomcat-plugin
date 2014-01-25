@@ -6,6 +6,7 @@ require 'fileutils'
 require_relative 'jenkins_sshkit_formatter'
 require_relative 'jenkins_output'
 require_relative 'capitomcat_utils'
+require_relative 'application'
 
 module Capitomcat
 
@@ -60,22 +61,6 @@ module Capitomcat
       set :use_context_update, @utils.is_use_context_update
       set :use_parallel, @task.use_parallel.to_bool
       set :listener, @listener
-
-      puts "remote_hosts : #{@task.remote_hosts}"
-      puts "user_account : #{@task.user_account}"
-      puts "tomcat_user : #{fetch(:tomcat_user)}"
-      puts "tomcat_user_group : #{fetch(:tomcat_user_group)}"
-      puts "tomcat_port : #{fetch(:tomcat_port)}"
-      puts "tomcat_cmd : #{fetch(:tomcat_cmd)}"
-      puts "use_tomcat_user_cmd : #{fetch(:use_tomcat_user_cmd)}"
-      puts "tomcat_war_file : #{fetch(:tomcat_war_file)}"
-      puts "tomcat_context_path : #{fetch(:tomcat_context_path)}"
-      puts "tomcat_context_file : #{fetch(:tomcat_context_file)}"
-      puts "tomcat_work_dir : #{fetch(:tomcat_work_dir)}"
-      puts "local_war_file : #{fetch(:local_war_file)}"
-      puts "context_template_file : #{fetch(:context_template_file)}"
-      puts "use_context_update : #{fetch(:use_context_update)}"
-      puts "use_parallel : #{fetch(:use_parallel)}"
     end
 
     def do_deploy
@@ -97,8 +82,7 @@ module Capitomcat
         end
       end
 
-      Capistrano::Application
-      capistrano = Capistrano::Application.new
+      capistrano = Capitomcat::Application.new
       # adding import for capitomcat recipe
       if is_task_exist == false
         cap_file = File.expand_path('../caps/capitomcat.cap', __FILE__).to_s
@@ -128,7 +112,6 @@ module Capitomcat
         else
           ssh[:auth_methods] = %w(publickey)
         end
-        puts prop.to_s
         server host, prop
       end
     end
@@ -139,8 +122,11 @@ module Capitomcat
 
     def config_global_ssh
       SSHKit::Backend::Netssh.pool.idle_timeout = 0
+      SSHKit::Backend::Netssh.configure do |ssh|
+        ssh.connection_timeout = 30
+        ssh.pty = true
+      end
     end
   end
 end
-
 
