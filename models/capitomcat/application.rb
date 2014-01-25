@@ -1,3 +1,4 @@
+require 'rake'
 module Capitomcat
   class Application < Rake::Application
 
