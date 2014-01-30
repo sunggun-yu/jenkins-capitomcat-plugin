@@ -22,7 +22,7 @@
          f.invisibleEntry(:title => 'Use system default credential') do
          end
        end
-       f.radioBlock(:name => 'auth_method', :title => 'Select SSH public key file', :value => 'publickey', :inline => true, :checked => _checked_publickey) do
+       f.radioBlock(:name => 'auth_method', :title => 'Select SSH key file', :value => 'publickey', :inline => true, :checked => _checked_publickey) do
          f.entry(:title => 'SSH private key file path',
                  :field => 'ssh_key_file',
                  :description => 'ex) /home/user/.ssh/id_rsa') do
@@ -84,6 +84,11 @@
              :description => 'Tomcat home directory') do
        f.textbox
      end
+     f.entry(:title => 'Tomcat port number',
+             :field => 'tomcat_port',
+             :description => 'Port number of Tomcat server. this value is using for checking Tomcat process is up.') do
+       f.textbox(:value => '8080')
+     end
      f.entry(:title => 'Tomcat user name',
              :field => 'tomcat_user',
              :value => 'tomcat',
@@ -122,11 +127,6 @@
                :field => 'tomcat_app_base',
                :description => 'App base name in server.xml. default value is "webapps"') do
          f.textbox(:value => 'webapps')
-       end
-       f.entry(:title => 'Tomcat port number',
-               :field => 'tomcat_port',
-               :description => 'Port number of Tomcat server. this value is using for checking Tomcat process is up.') do
-         f.textbox(:value => '8080')
        end
      end
    end
