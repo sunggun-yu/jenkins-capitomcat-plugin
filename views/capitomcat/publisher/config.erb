@@ -38,6 +38,16 @@
      end
    end
 
+   f.section(:title => 'Global SSH Option') do
+     f.entry(:title => 'Select PTY option',
+             :field => 'pty') do
+       f.booleanRadio(
+               :true => 'True',
+               :false => 'False'
+       )
+     end
+   end
+
    f.section(:title => 'Deploy Config') do
      f.entry(:title => 'WAR file',
              :field => 'local_war_file',
