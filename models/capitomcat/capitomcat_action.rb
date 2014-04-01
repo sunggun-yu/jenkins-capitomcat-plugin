@@ -20,7 +20,7 @@ module Capitomcat
 
     def configure
       Capistrano::Configuration.reset!
-      config_global_ssh()
+      config_global_ssh(@task.pty.to_bool)
       config_out_formatter() if @task.log_verbose.to_bool
       @utils = CapitomcatUtils.new(@task, @build.send(:native).getEnvironment(@listener))
     end
@@ -39,7 +39,6 @@ module Capitomcat
 
       set :format, :pretty
       set :log_level, :debug
-      set :pty, true
       set :use_sudo, true
 
       # Server definition section
@@ -71,6 +70,7 @@ module Capitomcat
         @listener.debug("remote_hosts          => #{@task.remote_hosts.to_s}")
         @listener.debug("user_account          => #{@task.user_account}")
         @listener.debug("auth_method           => #{@task.auth_method}")
+        @listener.debug("pty                   => #{@task.pty}")
         @listener.debug("local_war_file        => #{fetch(:local_war_file)}")
         @listener.debug("tomcat_user           => #{fetch(:tomcat_user)}")
         @listener.debug("tomcat_user_group     => #{fetch(:tomcat_user_group)}")
@@ -144,11 +144,11 @@ module Capitomcat
       SSHKit.config.output = JenkinsSSHKitFormatter.new(@listener.native)
     end
 
-    def config_global_ssh
+    def config_global_ssh(pty)
       SSHKit::Backend::Netssh.pool.idle_timeout = 0
       SSHKit::Backend::Netssh.configure do |ssh|
         ssh.connection_timeout = 30
-        ssh.pty = true
+        ssh.pty = pty
       end
     end
   end
