@@ -118,7 +118,7 @@ module Capitomcat
     end
 
     def setup_servers
-      @task.remote_hosts.split(',').each do |host|
+      @task.remote_hosts.gsub(' ', '').split(',').each do |host|
         prop = Hash.new
         ssh = Hash.new
 
