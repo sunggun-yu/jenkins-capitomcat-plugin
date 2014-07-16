@@ -33,6 +33,9 @@ namespace :capitomcat_jenkins do
         listener.info "[#{host}] Cleaning-up Tomcat Work directory : #{fetch(:tomcat_work_dir)}"
         cleanup_work_dir
 
+        listener.info "[#{host}] Clean Unpacked WAR directory"
+        cleanup_unpacked_dir
+
         listener.info "[#{host}] Starting Tomcat    : #{fetch(:tomcat_cmd)} start"
         start_tomcat
         check_tomcat_started
@@ -47,6 +50,9 @@ namespace :capitomcat_jenkins do
 
         listener.info "[#{host}] Cleaning-up Tomcat Work directory : #{fetch(:tomcat_work_dir)}"
         cleanup_work_dir
+
+        listener.info "[#{host}] Clean Unpacked WAR directory"
+        cleanup_unpacked_dir
 
         listener.info "[#{host}] Starting Tomcat    : #{fetch(:tomcat_cmd)} start"
         start_tomcat
