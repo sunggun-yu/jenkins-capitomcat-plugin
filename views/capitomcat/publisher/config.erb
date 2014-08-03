@@ -96,8 +96,9 @@
      end
      f.entry(:title => 'Tomcat port number',
              :field => 'tomcat_port',
+             :value => '8080',
              :description => 'Port number of Tomcat server. this value is using for checking Tomcat process is up.') do
-       f.textbox(:value => '8080')
+       f.textbox
      end
      f.entry(:title => 'Tomcat user name',
              :field => 'tomcat_user',
