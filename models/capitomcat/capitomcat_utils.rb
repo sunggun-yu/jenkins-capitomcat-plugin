@@ -2,14 +2,12 @@ module Capitomcat
 
   class CapitomcatUtils
 
-    def initialize(task, env_vars)
-      @task = task
-      @env_vars = env_vars
-      @use_context_update = eval(@task.use_context_update.to_s) if @task.use_context_update != nil && @task.use_context_update.length > 0
+    def initialize(env_map)
+      @env_map = env_map
     end
 
     def is_use_context_update
-      true if @use_context_update != nil
+      return @env_map['use_context_update'].to_bool
     end
 
     def get_tomcat_work_dir
@@ -17,14 +15,14 @@ module Capitomcat
     end
 
     def get_tomcat_context_path
-      @use_context_update['tomcat_context_path'] if @use_context_update != nil
+      @env_map['tomcat_context_path']
     end
 
     def get_tomcat_war_file
       if is_use_context_update
-        return substitute_env_vars(@use_context_update['tomcat_doc_base'])
+        return @env_map['tomcat_doc_base']
       else
-        return File.join(@task.tomcat_home, @task.tomcat_app_base, get_tomcat_context_name() + '.war').to_s
+        return File.join(@env_map['tomcat_home'], @env_map['tomcat_app_base'], get_tomcat_context_name() + '.war').to_s
       end
     end
 
@@ -33,12 +31,12 @@ module Capitomcat
     end
 
     def get_local_war_file
-      return substitute_env_vars(@task.local_war_file)
+      return @env_map['local_war_file']
     end
 
     def get_tomcat_context_name
       if is_use_context_update
-        return @use_context_update['tomcat_context_name']
+        return @env_map['tomcat_context_name']
       else
         local_war_file = get_local_war_file()
         ext_name = File.extname(local_war_file)
@@ -48,16 +46,9 @@ module Capitomcat
 
     private
     def get_base_dir(base)
-      return File.join(@task.tomcat_home, base, @task.tomcat_engine, @task.tomcat_vhost, get_tomcat_context_name()).to_s
+      return File.join(@env_map['tomcat_home'], base, @env_map['tomcat_engine'], @env_map['tomcat_vhost'], get_tomcat_context_name()).to_s
     end
 
-    def substitute_env_vars(txt)
-      _txt = txt
-      @env_vars.each do |env_key, env_value|
-        _txt = _txt.gsub("$#{env_key}", env_value)
-      end
-      return _txt
-    end
   end
 
 end
