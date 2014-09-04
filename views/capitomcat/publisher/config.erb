@@ -126,18 +126,21 @@
      f.advanced do
        f.entry(:title => 'Engine name',
                :field => 'tomcat_engine',
+               :value => 'Catalina',
                :description => 'Engine name in server.xml. default value is "Catalina"') do
-         f.textbox(:value => 'Catalina')
+         f.textbox
        end
        f.entry(:title => 'Tomcat Host Name',
                :field => 'tomcat_vhost',
+               :value => 'localhost',
                :description => 'Default host name in server.xml. default value is "localhost"') do
-         f.textbox(:value => 'localhost')
+         f.textbox
        end
        f.entry(:title => 'AppBase',
                :field => 'tomcat_app_base',
+               :value => 'webapps',
                :description => 'App base name in server.xml. default value is "webapps"') do
-         f.textbox(:value => 'webapps')
+         f.textbox
        end
      end
    end
