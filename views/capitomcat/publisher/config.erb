@@ -91,32 +91,28 @@
    f.section(:title => 'Tomcat Server Information') do
      f.entry(:title => 'Tomcat Home',
              :field => 'tomcat_home',
-             :description => 'Tomcat home directory') do
+             :description => 'Tomcat home directory. ex) /opt/tomcat7') do
        f.textbox
      end
      f.entry(:title => 'Tomcat port number',
              :field => 'tomcat_port',
-             :value => '8080',
              :description => 'Port number of Tomcat server. this value is using for checking Tomcat process is up.') do
-       f.textbox
+       f.textbox(:default => '8080')
      end
      f.entry(:title => 'Tomcat user name',
              :field => 'tomcat_user',
-             :value => 'tomcat',
-             :description => 'The owner user of Tomcat home directory.') do
+             :description => 'The owner user of Tomcat home directory. ex) tomcat7') do
        f.textbox
      end
      f.entry(:title => 'Tomcat group name',
              :field => 'tomcat_user_group',
-             :value => 'tomcat',
-             :description => 'The owner group of Tomcat home directory.') do
+             :description => 'The owner group of Tomcat home directory. ex) tomcat7') do
        f.textbox
      end
      f.entry(:title => 'Tomcat command',
              :field => 'tomcat_cmd',
-             :value => 'localhost',
              :description => 'Tomcat executable command. for example, /etc/init.d/tomcat or /your/tomcat/home/bin/catalina.sh can be used. please make sure not to include start or stop parameter.') do
-       f.textbox
+       f.textbox(:default => 'localhost')
      end
      f.entry(:title => 'Use tomcat user for executing tomcat command',
              :field => 'use_tomcat_user_cmd',
@@ -126,21 +122,18 @@
      f.advanced do
        f.entry(:title => 'Engine name',
                :field => 'tomcat_engine',
-               :value => 'Catalina',
                :description => 'Engine name in server.xml. default value is "Catalina"') do
-         f.textbox
+         f.textbox(:default => 'Catalina')
        end
        f.entry(:title => 'Tomcat Host Name',
                :field => 'tomcat_vhost',
-               :value => 'localhost',
                :description => 'Default host name in server.xml. default value is "localhost"') do
-         f.textbox
+         f.textbox(:default => 'localhost')
        end
        f.entry(:title => 'AppBase',
                :field => 'tomcat_app_base',
-               :value => 'webapps',
                :description => 'App base name in server.xml. default value is "webapps"') do
-         f.textbox
+         f.textbox(:default => 'webapps')
        end
      end
    end
