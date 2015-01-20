@@ -73,6 +73,7 @@ module Capitomcat
         @listener.debug("user_account          => #{@env_map['user_account']}")
         @listener.debug("auth_method           => #{@env_map['auth_method']}")
         @listener.debug("pty                   => #{@env_map['pty']}")
+        @listener.debug("ssh_port              => #{@env_map['ssh_port']}")
         @listener.debug("local_war_file        => #{fetch(:local_war_file)}")
         @listener.debug("tomcat_user           => #{fetch(:tomcat_user)}")
         @listener.debug("tomcat_user_group     => #{fetch(:tomcat_user_group)}")
@@ -133,6 +134,7 @@ module Capitomcat
         ssh[:user] = @env_map['user_account']
         ssh[:keys] = [@env_map['ssh_key_file']] if @env_map['auth_method'] == 'publickey' && @env_map['ssh_key_file'].length > 0
         ssh[:forward_agent] = false
+        ssh[:port] = @env_map['ssh_port'].to_i
 
         if @env_map['auth_method'] == 'password'
           ssh[:auth_methods] = %w(password)

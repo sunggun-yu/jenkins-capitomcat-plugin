@@ -39,6 +39,11 @@
    end
 
    f.section(:title => 'Global SSH Option') do
+     f.entry(:title => 'SSH Port',
+             :field => 'ssh_port',
+             :description => 'SSH port number. default is 22') do
+       f.textbox(:default => 22)
+     end
      f.entry(:title => 'Select PTY option',
              :field => 'pty') do
        f.booleanRadio(
