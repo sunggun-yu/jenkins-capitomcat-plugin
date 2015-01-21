@@ -3,15 +3,15 @@ require 'jenkins/model/describable'
 require 'jenkins/tasks/build_step'
 require 'json'
 require_relative 'capitomcat_action'
-require_relative 'publisher_descriptor'
+require_relative 'builder_descriptor'
 
 module Capitomcat
-  class Publisher
+  class Builder
     include Jenkins::Model
     include Jenkins::Model::Describable
     include Jenkins::Tasks::BuildStep
 
-    describe_as Java.hudson.tasks.Publisher, :with => Capitomcat::PublisherDescriptor
+    describe_as Java.hudson.tasks.Builder, :with => Capitomcat::BuilderDescriptor
 
     attr_accessor :local_war_file,
                   :remote_hosts,
