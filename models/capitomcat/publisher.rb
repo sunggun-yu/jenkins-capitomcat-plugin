@@ -36,7 +36,9 @@ module Capitomcat
                   :auth_method,
                   :user_pw,
                   :pty,
-                  :ssh_port
+                  :ssh_port,
+                  :tomcat_cmd_wait_start,
+                  :tomcat_cmd_wait_stop
 
     display_name 'Deploy WAR file to Tomcat via Capitomcat'
 

@@ -140,6 +140,16 @@
                :description => 'App base name in server.xml. default value is "webapps"') do
          f.textbox(:default => 'webapps')
        end
+       f.entry(:title => 'Waiting time in sec until Tomcat starts',
+               :field => 'tomcat_cmd_wait_start',
+               :description => 'Default is 30 sec') do
+         f.textbox(:default => 30)
+       end
+       f.entry(:title => 'Waiting time in sec until Tomcat stops',
+               :field => 'tomcat_cmd_wait_stop',
+               :description => 'Default is 5 sec') do
+         f.textbox(:default => 5)
+       end
      end
    end
 %>
