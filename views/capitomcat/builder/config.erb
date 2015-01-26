@@ -1,4 +1,155 @@
 <%
-   template = ERB.new File.new('templates/capitomcat_config.erb').read, nil, '%'
-   template.result(binding)
+   f = taglib('/lib/form')
+
+   f.section(:title => 'Host and Authentication config') do
+     f.entry(:title => 'Hosts',
+             :field => 'remote_hosts',
+             :description => 'The remote host names ex) dev01,dev02') do
+       f.textbox
+     end
+     f.entry(:title => 'User account',
+             :field => 'user_account',
+             :description => 'User account to login') do
+       f.textbox
+     end
+
+     (instance == nil || instance.auth_method == 'default' || instance.auth_method == nil) ? _checked_default = true : _checked_default = false
+     (instance != nil && (instance.auth_method == 'publickey')) ? _checked_publickey = true : _checked_publickey = false
+     (instance != nil && (instance.auth_method == 'password')) ? _checked_passwd = true : _checked_passwd = false
+
+     f.entry(:title => 'Global Credential Config') do
+       f.radioBlock(:name => 'auth_method', :title => 'Use system default credential', :value => 'default', :inline => true, :checked => _checked_default) do
+         f.invisibleEntry(:title => 'Use system default credential') do
+         end
+       end
+       f.radioBlock(:name => 'auth_method', :title => 'Select SSH key file', :value => 'publickey', :inline => true, :checked => _checked_publickey) do
+         f.entry(:title => 'SSH private key file path',
+                 :field => 'ssh_key_file',
+                 :description => 'ex) /home/user/.ssh/id_rsa') do
+           f.textbox
+         end
+       end
+       f.radioBlock(:name => 'auth_method', :title => 'Use password', :value => 'password', :inline => true, :checked => _checked_passwd) do
+         f.entry(:title => 'PW',
+                 :field => 'user_pw') do
+           f.password
+         end
+       end
+     end
+   end
+
+   f.section(:title => 'Global SSH Option') do
+     f.entry(:title => 'SSH Port',
+             :field => 'ssh_port',
+             :description => 'SSH port number. default is 22') do
+       f.textbox(:default => 22)
+     end
+     f.entry(:title => 'Select PTY option',
+             :field => 'pty') do
+       f.booleanRadio(
+               :true => 'True',
+               :false => 'False'
+       )
+     end
+   end
+
+   f.section(:title => 'Deploy Config') do
+     f.entry(:title => 'WAR file',
+             :field => 'local_war_file',
+             :description => 'The WAR file that to be deployed to remote tomcat server. also, you can use Jenkins env-vars. ex) $WORKSPACE/target/app.war') do
+       f.textbox
+     end
+     f.entry(:title => 'Parallel Mode',
+             :field => 'use_parallel',
+             :description => 'Parallel or Sequential for deployment task') do
+       f.booleanRadio(:field => 'use_parallel',)
+     end
+
+     _selected_use_context_update = true if instance != nil && instance.use_context_update != nil
+     f.optionalBlock(:name => 'use_context_update',
+                     :title => 'Use Context updating',
+                     :field => 'use_context_update',
+                     :checked => _selected_use_context_update,
+                     :inline => false) do
+       f.entry(:title => 'Context name',
+               :field => 'tomcat_context_name',
+               :description => 'Context name of application. ex) test-web') do
+         f.textbox(:value => (instance.value_use_context_update('tomcat_context_name') if instance != nil))
+       end
+       f.entry(:title => 'Context path',
+               :field => 'tomcat_context_path',
+               :description => 'Context path name of application. ex) /test-web') do
+         f.textbox(:value => (instance.value_use_context_update('tomcat_context_path') if instance != nil))
+       end
+       f.entry(:title => 'Context docBase(WAR file path)',
+               :field => 'tomcat_doc_base',
+               :description => 'The path name to the web application archive file. also, you can use Jenkins env-vars. ex) /var/app/war/test-web-$BUILD_NUMBER.war or /var/lib/tomcat7/webapps/test-web.war') do
+         f.textbox(:value => (instance.value_use_context_update('tomcat_doc_base') if instance != nil))
+       end
+     end
+     f.entry(:title => 'Show verbose log message',
+             :field => 'log_verbose') do
+       f.booleanRadio
+     end
+   end
+
+   f.section(:title => 'Tomcat Server Information') do
+     f.entry(:title => 'Tomcat Home',
+             :field => 'tomcat_home',
+             :description => 'Tomcat home directory. ex) /opt/tomcat7') do
+       f.textbox
+     end
+     f.entry(:title => 'Tomcat port number',
+             :field => 'tomcat_port',
+             :description => 'Port number of Tomcat server. this value is using for checking Tomcat process is up.') do
+       f.textbox(:default => '8080')
+     end
+     f.entry(:title => 'Tomcat user name',
+             :field => 'tomcat_user',
+             :description => 'The owner user of Tomcat home directory. ex) tomcat7') do
+       f.textbox
+     end
+     f.entry(:title => 'Tomcat group name',
+             :field => 'tomcat_user_group',
+             :description => 'The owner group of Tomcat home directory. ex) tomcat7') do
+       f.textbox
+     end
+     f.entry(:title => 'Tomcat command',
+             :field => 'tomcat_cmd',
+             :description => 'Tomcat executable command. for example, /etc/init.d/tomcat or /your/tomcat/home/bin/catalina.sh can be used. please make sure not to include start or stop parameter.') do
+       f.textbox
+     end
+     f.entry(:title => 'Use tomcat user for executing tomcat command',
+             :field => 'use_tomcat_user_cmd',
+             :description => 'If you check "Yes", tomcat command will be executed like, "sudo -u tomcat7 /var/tomcat7/bin/catalina.sh start|stop". in this case, your deploy user may need permission for tomcat user.') do
+       f.booleanRadio
+     end
+     f.advanced do
+       f.entry(:title => 'Engine name',
+               :field => 'tomcat_engine',
+               :description => 'Engine name in server.xml. default value is "Catalina"') do
+         f.textbox(:default => 'Catalina')
+       end
+       f.entry(:title => 'Tomcat Host Name',
+               :field => 'tomcat_vhost',
+               :description => 'Default host name in server.xml. default value is "localhost"') do
+         f.textbox(:default => 'localhost')
+       end
+       f.entry(:title => 'AppBase',
+               :field => 'tomcat_app_base',
+               :description => 'App base name in server.xml. default value is "webapps"') do
+         f.textbox(:default => 'webapps')
+       end
+       f.entry(:title => 'Waiting time in sec until Tomcat starts',
+               :field => 'tomcat_cmd_wait_start',
+               :description => 'Default is 30 sec') do
+         f.textbox(:default => 30)
+       end
+       f.entry(:title => 'Waiting time in sec until Tomcat stops',
+               :field => 'tomcat_cmd_wait_stop',
+               :description => 'Default is 5 sec') do
+         f.textbox(:default => 5)
+       end
+     end
+   end
 %>
