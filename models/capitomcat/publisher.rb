@@ -38,7 +38,8 @@ module Capitomcat
                   :pty,
                   :ssh_port,
                   :tomcat_cmd_wait_start,
-                  :tomcat_cmd_wait_stop
+                  :tomcat_cmd_wait_stop,
+                  :use_background_tomcat_cmd
 
     display_name 'Deploy WAR file to Tomcat via Capitomcat'
 
