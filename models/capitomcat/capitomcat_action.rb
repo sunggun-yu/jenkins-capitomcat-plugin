@@ -60,7 +60,7 @@ module Capitomcat
       set :tomcat_cmd_wait_start, @env_map['tomcat_cmd_wait_start']
       set :tomcat_cmd_wait_stop, @env_map['tomcat_cmd_wait_stop']
       # reverted true/false for use_background_tomcat_cmd to make USE-NO as default
-      set :use_background_tomcat_cmd, @env_map['use_background_tomcat_cmd'].to_s.length > 0 ? !@env_map['use_background_tomcat_cmd'].to_bool : true
+      set :use_background_tomcat_cmd, @env_map['use_background_tomcat_cmd'].to_s.length > 0 ? @env_map['use_background_tomcat_cmd'].to_bool : false
 
       # Deploy setting section
       set :local_war_file, @env_map['local_war_file']

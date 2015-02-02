@@ -150,11 +150,10 @@
                :description => 'Default is 5 sec') do
          f.textbox(:default => 5)
        end
-       f.entry(:title => 'Force pty=false for executing Tomcat command.',
+       f.entry(:title => 'Use background execution for Tomcat command',
                :field => 'use_background_tomcat_cmd',
-               :description => 'If you check "Yes", Tomcat command will be forced pty=false by background script. otherwise it will follow the pty option in global ssh option. if Tomcat script is not running and keep waiting, please change this option.') do
-         # reverted true/false to make USE-NO as default
-         f.booleanRadio(:false => 'Yes', :true => 'No')
+               :description => 'If you check "Yes", Tomcat command will be executed in background. it makes TTY=Unknown (pty=false) on some old OS. if the Tomcat script is not running and keep waiting, please try this option. otherwise, you may need to change your tomcat script in your environment.') do
+         f.booleanRadio()
        end
      end
    end
