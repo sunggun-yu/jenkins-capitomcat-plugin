@@ -140,6 +140,21 @@
                :description => 'App base name in server.xml. default value is "webapps"') do
          f.textbox(:default => 'webapps')
        end
+       f.entry(:title => 'Waiting time in sec until Tomcat starts',
+               :field => 'tomcat_cmd_wait_start',
+               :description => 'Default is 30 sec') do
+         f.textbox(:default => 30)
+       end
+       f.entry(:title => 'Waiting time in sec until Tomcat stops',
+               :field => 'tomcat_cmd_wait_stop',
+               :description => 'Default is 5 sec') do
+         f.textbox(:default => 5)
+       end
+       f.entry(:title => 'Use background execution for Tomcat command',
+               :field => 'use_background_tomcat_cmd',
+               :description => 'If you check "Yes", Tomcat command will be executed in background. it makes TTY=Unknown (pty=false) on some old OS. if the Tomcat script is not running and keep waiting, please try this option. otherwise, you may need to change your tomcat script in your environment.') do
+         f.booleanRadio()
+       end
      end
    end
 %>
